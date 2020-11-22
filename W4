@@ -1,0 +1,69 @@
+from flask import Flask
+from flask import request
+from flask import json
+
+app = Flask(__name__)
+
+
+# -- DO NOT EDIT
+# sample end point for HTTP Get
+@app.route("/")
+def default():
+    """
+    default endpoint for this server, just for demo.
+
+    :return: str
+    """
+    return "FIRST PROJECT - we have " + str(len(get_client_rates())) + " clients in total."
+
+
+# sample data load function
+# This is a temporary data file - when we get to know more about database and cloud storage
+# we would not be using this kind of data storage.
+def get_client_rates():
+    """
+    return all the client - rate pairs we have.
+
+    :return: dict {id: {'rate':float}}
+    """
+    
+    import pandas as pd
+    df = pd.read_json("client_rate.json")
+    return df.to_dict()
+# -- DO NOT EDIT END
+
+
+# -- TODO: Part 1 - add an endpoint to get rate by client id
+# When query http://hostname/rate/client1 it would return the rate number for client1 - 0.2
+@app.route("/rate/<client_id>")
+def get_client_rate(client_id):
+    """
+    End point for getting rate for a client_id.
+
+    :param client_id: str
+    :return: http response
+    """
+    # How to get the actual rate from client_id?
+    "变成一字典， 找到对应的rate"
+    client_info = get_client_rates()    
+    return client_info[client_id]
+# -- TODO END: Part 1
+# -- TODO: Part 2, write an API client so we are able to query
+def get_client_rate(client_id):
+    """
+    would expect to return a float rate.
+
+    :param client_id: string, e.g. 'client1'
+    :return: float, e.g. 0.2
+    """
+    # Sample code for getting http response. Need to edit
+    import requests
+    response = requests.get("http://127.0.0.1:5000/rate/" + client_id)
+    print(response)
+    return response.content
+    # Sample end
+# -- TODO END: Part 2
+# -- TODO: Part3
+def test_get_rate():
+    print(get_client_rate("client 1"))
+    assert get_client_rate == 0.2
